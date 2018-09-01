@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# aliases
+deck=$1
+tmp_deck="/tmp/tmpdeck"
+today=$(date +"%m-%d-%Y")
+resets="n"
+
+main() {
+	# shuffle deck
+	shuf $deck -o $tmp_deck
+	mv $tmp_deck $deck
+
+	# drill the items
+	while read item; do
+	    drill "$item"
+	done < $deck
+
+	# update the deck from the temporary deck
+	mv $tmp_deck $deck
+
+	# say goodbye
+	[[ $resets == "y" ]] && echo -e "\e[1m\e[33mWarning\e[0m: some flashcards have been resetted because of poor perfomances so you should study the deck again"
+}
+
+drill() {
+	# set up variables
+	IFS=';' read -a q <<< "$1"
+	question="${q[0]}"
+	answer="${q[1]}"
+	efactor="${q[2]}"
+	date="${q[3]}"
+	repetition_number="${q[4]}"
+	interval="${q[5]}"
+
+	if [[ $today > $date || $today == $date ]]; then
+		# ask the question and get the quality
+		echo -e  "\e[1mQUESTION:\e[0m $question"
+		read -n 1 -s -r < /dev/tty
+		echo -e "\e[1mANSWER:\e[0m   $answer"
+		read -n 1 -p "Quality of your answer [0-5]: " quality < /dev/tty
+		echo -e "\n"
+
+		# update the e-factor
+		new_efactor=$(echo "$efactor - 0.8 + 0.28 * $quality - 0.02 * $quality * $quality" | bc)
+		[[ $(echo "$new_efactor > 2.5" | bc) == 1 ]] && new_efactor="2.5"
+		[[ $(echo "$new_efactor < 1.3" | bc) == 1 ]] && new_efactor="1.3"
+
+		# calculate new interval
+		if [[ $repetition_number == "1" || $repetition_number == "2" ]]; then
+			new_interval="1";
+		else
+			new_interval=$(echo "$interval * $new_efactor" | bc)
+			new_interval=$(printf "%.0f" $new_interval)
+		fi
+
+		# update the item and store it in a temporary file
+		if [[ $(echo "$quality < 3" | bc) == "1" ]]; then
+			resets="y"
+			echo "$question;$answer;$new_efactor;$today;1;0" >> $tmp_deck
+		else
+			echo "$question;$answer;$new_efactor;$(date -d "now +$new_interval days" +"%m-%d-%Y");$(echo "$repetition_number + 1" | bc);$new_interval" >> $tmp_deck
+		fi
+	else
+		echo $1 >> $tmp_deck
+	fi
+}
+
+main
