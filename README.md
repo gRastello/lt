@@ -17,7 +17,7 @@ Clone this repository, write your flashcards then simply run `./lt <deck>` to st
 as you can imagine each line represent a flashcard and some information about it. To add a flashcard just substitute `<question>` and `<answer>` accordingly and give the other fields the standard values as in the following example:
 
 ```
-Definition of a fiel;A field is a commutative division ring;2.5;mm-dd-yyyy;1;0
+Definition of a fiel;A field is a commutative division ring;2.5;mm-dd-yyyy;0;0
 ```
 
 usually you'll want to substitute `mm-dd-yyyy` with today's or tomorrow date but if you're making flashcards in advance you can also schedule them for later my writing a future date. You should not put any line that is not of the above format in a deck file nor use the `;` character in your questions or answers. **If you do not respect those simple rules lt will probably fail potentially deleting part (if not all) of your flashcards** thus is good practice to back up your decks.

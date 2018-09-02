@@ -47,7 +47,7 @@ drill() {
 		[[ $(echo "$new_efactor < 1.3" | bc) == 1 ]] && new_efactor="1.3"
 
 		# calculate new interval
-		if [[ $repetition_number == "1" || $repetition_number == "2" ]]; then
+		if [[ $repetition_number == "0" ]]; then
 			new_interval="1";
 		else
 			new_interval=$(echo "$interval * $new_efactor" | bc)
