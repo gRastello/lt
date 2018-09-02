@@ -52,6 +52,7 @@ drill() {
 		else
 			new_interval=$(echo "$interval * $new_efactor" | bc)
 			new_interval=$(printf "%.0f" $new_interval)
+			[[ $new_interval == "0" ]] && new_interval="1"
 		fi
 
 		# update the item and store it in a temporary file
