@@ -1,19 +1,19 @@
 #!/bin/bash
 
 # aliases
-deck=$1
 tmp_deck="/tmp/tmpdeck"
 today=$(date +"%m-%d-%Y")
 resets="n"
 
-main() {
+# studying functions
+study_deck() {
 	# shuffle deck
 	shuf $deck -o $tmp_deck
 	mv $tmp_deck $deck
 
-	# drill the items
+	# loop through items
 	while read item; do
-	    drill "$item"
+	    study_item "$item"
 	done < $deck
 
 	# update the deck from the temporary deck
@@ -23,7 +23,7 @@ main() {
 	[[ $resets == "y" ]] && echo -e "\e[1m\e[33mWarning\e[0m: some flashcards have been resetted because of poor perfomances so you should study the deck again"
 }
 
-drill() {
+study_item() {
 	# set up variables
 	IFS=';' read -a q <<< "$1"
 	question="${q[0]}"
@@ -67,4 +67,35 @@ drill() {
 	fi
 }
 
-main
+# cramming functions
+cram_deck() {
+	# shuffle deck
+	shuf $deck -o $tmp_deck
+	mv $tmp_deck $deck
+
+	# drill the items
+	while read item; do
+	    cram_item "$item"
+	done < $deck
+}
+
+cram_item() {
+	# set up variables
+	IFS=';' read -a q <<< "$1"
+	question="${q[0]}"
+	answer="${q[1]}"
+
+	# ask the question and get the quality
+	echo -e  "\e[1mQUESTION:\e[0m $question"
+	read -n 1 -s -r < /dev/tty
+	echo -e "\e[1mANSWER:\e[0m   $answer\n"
+}
+
+# argument handling
+if [[ $1 == "cram" ]]; then
+	deck=$2
+	cram_deck
+else
+	deck=$1
+	study_deck
+fi
