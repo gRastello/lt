@@ -31,5 +31,6 @@ In the spirit of spaced repetition lt does not allow you to study again your dec
 * if you're manually editing your decks do not expect them to be well-ordered; lt literally shuffles them every time
 
 ## TODO
-* [ ] add functionality to add flashcards to a deck without having to operate the deck file directly
+* [ ] add info funtionality
+* [X] add functionality to add flashcards to a deck without having to operate the deck file directly
 * [X] merging cram into lt and make it available with an option

@@ -58,7 +58,7 @@ study_item() {
 		# update the item and store it in a temporary file
 		if [[ $(echo "$quality < 3" | bc) == "1" ]]; then
 			resets="y"
-			echo "$question;$answer;$new_efactor;$today;1;0" >> $tmp_deck
+			echo "$question;$answer;$new_efactor;$today;0;0" >> $tmp_deck
 		else
 			echo "$question;$answer;$new_efactor;$(date -d "now +$new_interval days" +"%m-%d-%Y");$(echo "$repetition_number + 1" | bc);$new_interval" >> $tmp_deck
 		fi
@@ -91,10 +91,19 @@ cram_item() {
 	echo -e "\e[1mANSWER:\e[0m   $answer\n"
 }
 
+add_to_deck() {
+	read -e -p "$(echo -e "\e[1mQUESTION:\e[0m ")" question
+	read -e -p "$(echo -e "\e[1mANSWER:\e[0m ")" answer
+	echo "$question;$answer;2.5;$(date +"%m-%d-%Y");0;0" >> $deck
+}
+
 # argument handling
 if [[ $1 == "cram" ]]; then
 	deck=$2
 	cram_deck
+elif [[ $1 == "add" ]]; then
+	deck=$2
+	add_to_deck
 else
 	deck=$1
 	study_deck
