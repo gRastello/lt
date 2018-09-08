@@ -106,5 +106,9 @@ elif [[ $1 == "add" ]]; then
 	add_to_deck
 else
 	deck=$1
+
+	# backup the deck just in case
+	cp $deck backup_$deck
+
 	study_deck
 fi
