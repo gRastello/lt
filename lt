@@ -97,6 +97,17 @@ add_to_deck() {
 	echo "$question;$answer;2.5;$(date +"%m-%d-%Y");0;0" >> $deck
 }
 
+# print informations about the deck
+info_deck() {
+	echo -e "\e[1mStats for\e[0m $deck\n"
+
+	today=$(date +"%m-%d-%Y")
+	tomorrow=$(date -d "now +1 days" +"%m-%d-%Y")
+	echo -e "\e[1mTotal cards\e[0m:  $(cat $deck | grep -c '.')"
+	echo -e "\e[1mDue today\e[0m:    $(cat $deck | grep -c "$today")"
+	echo -e "\e[1mDue tomorrow\e[0m: $(cat $deck | grep -c "$tomorrow")"
+}
+
 # argument handling
 if [[ $1 == "cram" ]]; then
 	deck=$2
@@ -104,6 +115,9 @@ if [[ $1 == "cram" ]]; then
 elif [[ $1 == "add" ]]; then
 	deck=$2
 	add_to_deck
+elif [[ $1 == "info" ]]; then
+	deck=$2
+	info_deck
 else
 	deck=$1
 
