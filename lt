@@ -41,6 +41,11 @@ study_item() {
 		read -n 1 -p "Quality of your answer [0-5]: " quality < /dev/tty
 		echo -e "\n"
 
+		# if not one of the above numbers is given change quality to 0
+		if [[ $quality != 0 && $quality != 1 && $quality != 2 && $quality != 3 && $quality != 4 && $quality != 5 ]]; then
+			quality=0
+		fi
+
 		# update the e-factor
 		new_efactor=$(echo "$efactor - 0.8 + 0.28 * $quality - 0.02 * $quality * $quality" | bc)
 		[[ $(echo "$new_efactor > 2.5" | bc) == 1 ]] && new_efactor="2.5"
@@ -101,11 +106,27 @@ add_to_deck() {
 info_deck() {
 	echo -e "\e[1mStats for\e[0m $deck\n"
 
+	# total cards, due today and due tomorrow
 	today=$(date +"%m-%d-%Y")
 	tomorrow=$(date -d "now +1 days" +"%m-%d-%Y")
 	echo -e "\e[1mTotal cards\e[0m:  $(cat $deck | grep -c '.')"
 	echo -e "\e[1mDue today\e[0m:    $(cat $deck | grep -c "$today")"
-	echo -e "\e[1mDue tomorrow\e[0m: $(cat $deck | grep -c "$tomorrow")"
+	echo -e "\e[1mDue tomorrow\e[0m: $(cat $deck | grep -c "$tomorrow")\n"
+
+	# e-factor average
+	sum=0
+	items=$(grep -c '' $deck)
+
+	while read item; do
+		# set up variables
+		IFS=';' read -a q <<< "$item"
+		efactor="${q[2]}"
+		sum="$sum + $efactor"
+	done < $deck
+
+	avg=$(echo "($sum)/$items" | bc -l)
+	avg=$(printf "%.2f" $avg)
+	echo -e "\e[1mAverage E-factor\e[0m: $avg"
 }
 
 # argument handling

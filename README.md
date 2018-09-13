@@ -34,12 +34,14 @@ In the spirit of spaced repetition lt does not allow you to study again your dec
 To get informations about a particular deck just run `./lt info <deck>`. At the moment this command does not provide a lot of informations but at least it does something.
 
 ## Known bugs and strange "features"
-* lt does not allow you to quit a session nor saves any progress to the deck file until the session is over. If you quit from lt for any reason it is possible to recover the lost progress in the `/tmp/tmpdeck` file and merge them back into the deck file.
+* lt does not allow you to quit a session nor saves any progress to the deck file until the session is over. If you quit from lt for any reason it is possible to recover the lost progress in the `/tmp/tmpdeck` file and merge them back into the deck file
 * running more than one instance of lt will probably mess up your decks since lt saves progress in temporary file `/tmp/tmpfile`
 * if you're manually editing your decks do not expect them to be well-ordered; lt literally shuffles them every time
+* the info command does not count flashcards with review dates scheduled in the past in today's counter. So if you skip one or more days of reviews the info command will not show accurate numbers for today's reviews
 
 ## TODO
-* [ ] add more informations to the info command
+* [ ] fix the info bug
+* [X] add more informations to the info command
 * [X] add info funtionality
 * [X] add functionality to add flashcards to a deck without having to operate the deck file directly
 * [X] merging cram into lt and make it available with an option
