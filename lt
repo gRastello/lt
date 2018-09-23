@@ -106,24 +106,30 @@ add_to_deck() {
 info_deck() {
 	echo -e "\e[1mStats for\e[0m $deck\n"
 
-	# total cards, due today and due tomorrow
 	today=$(date +"%m-%d-%Y")
 	tomorrow=$(date -d "now +1 days" +"%m-%d-%Y")
-	echo -e "\e[1mTotal cards\e[0m:  $(cat $deck | grep -c '.')"
-	echo -e "\e[1mDue today\e[0m:    $(cat $deck | grep -c "$today")"
+	items=$(grep -c '' $deck)
+	sum=0
+	due_today=0
+
+	while read item; do
+		IFS=';' read -a q <<< "$item"
+
+		efactor="${q[2]}"
+		sum="$sum + $efactor"
+
+		date="${q[3]}"
+		if [[ $date < $today || $date == $today ]]; then
+			due_today=$(echo "$due_today + 1" | bc -l)
+		fi
+	done < $deck
+
+	# total, due today and due tomorrow
+	echo -e "\e[1mTotal cards\e[0m:  $items"
+	echo -e "\e[1mDue today\e[0m:    $due_today"
 	echo -e "\e[1mDue tomorrow\e[0m: $(cat $deck | grep -c "$tomorrow")\n"
 
 	# e-factor average
-	sum=0
-	items=$(grep -c '' $deck)
-
-	while read item; do
-		# set up variables
-		IFS=';' read -a q <<< "$item"
-		efactor="${q[2]}"
-		sum="$sum + $efactor"
-	done < $deck
-
 	avg=$(echo "($sum)/$items" | bc -l)
 	avg=$(printf "%.2f" $avg)
 	echo -e "\e[1mAverage E-factor\e[0m: $avg"
