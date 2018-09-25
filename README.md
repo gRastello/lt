@@ -1,7 +1,16 @@
 # lt
-Spaced repetition shell scripts based on the SM2 algorithm (it's old but it works (for me)).
+Spaced repetition shell scripts based on the SM2 algorithm (it's old but it works (for me)). Now with an ncurses interface as well.
+
+## Dependencies
+Everything should be installed on your Linux distro of choice and if not you'll surely find them in your repositories.
+
+* bash
+* bc
+* dialog
 
 ## Usage
+
+**THE SECTION BELOW ARE MEANT FOR THE lt FILE, INSTRUCTIONS ON HOW TO USE THE nclt FILE ARE BELOW (and btw you should use that)**
 
 Clone this repository, write your flashcards then simply run `./lt <deck>` to study flashcards in `<deck>`. Files containing flashcards (decks) must have the following structure:
 
@@ -33,12 +42,16 @@ In the spirit of spaced repetition lt does not allow you to study again your dec
 ### Using info
 To get informations about a particular deck just run `./lt info <deck>`. At the moment this command does not provide a lot of informations but at least it does something.
 
+## Using nclt
+nclt (ncurses lt) is an ncurses interface to lt; it is easy, intuitive and, at the moment, more updated than lt itself. To use it just run `./nclt <deck>`: a menu will appear in your terminal from which you can access all of lt features (reviewing flashcards, cramming a deck, reading infos about a deck and adding new flashcards to a deck and of course quitting lt) with your arrow keys or by pressing the corresponding number. 
+
 ## Known bugs and strange "features"
 * lt does not allow you to quit a session nor saves any progress to the deck file until the session is over. If you quit from lt for any reason it is possible to recover the lost progress in the `/tmp/tmpdeck` file and merge them back into the deck file
 * running more than one instance of lt will probably mess up your decks since lt saves progress in temporary file `/tmp/tmpfile`
 * if you're manually editing your decks do not expect them to be well-ordered; lt literally shuffles them every time
 
 ## TODO
+* [ ] probably dropping lt and moving to developing only nclt
 * [X] fix the info bug
 * [X] add more informations to the info command
 * [X] add info funtionality
