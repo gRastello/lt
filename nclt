@@ -7,15 +7,15 @@ tomorrow=$(date -d "now +1 days" +"%m-%d-%Y")
 resets="n"
 
 question_dialog() {
-	dialog --no-lines --no-shadow --title "Question" --msgbox "$1" 13 70
+	dialog --no-lines --no-shadow --title "Question" --msgbox "$1" 20 70
 }
 
 answer_dialog() {
-	dialog --no-lines --no-shadow --title "Answer" --msgbox "$1" 13 70
+	dialog --no-lines --no-shadow --title "Answer" --msgbox "$1" 20 70
 }
 
 quality_dialog() {
-	dialog --no-lines --no-shadow --no-cancel --title "Rating" --menu "Rate your answer:" 13 70 6 0 "complete blackout" 1 "incorrect" 2 "incorrect but the correct answer seemed easy to recall" 3 "correct response recalled with difficulty" 4 "correct response with some hesitation" 5 "correct response recalled easily" --output-fd 1
+	dialog --no-lines --no-shadow --no-cancel --title "Answer" --menu "$1\n\nRate your answer:" 20 70 6 0 "complete blackout" 1 "incorrect" 2 "incorrect but the correct answer seemed easy to recall" 3 "correct response recalled with difficulty" 4 "correct response with some hesitation" 5 "correct response recalled easily" --output-fd 1
 }
 
 # studying functions
@@ -23,6 +23,9 @@ study_deck() {
 	# shuffle deck
 	shuf $deck -o $tmp_deck
 	mv $tmp_deck $deck
+
+	# we have not failed any review, yet
+	resets="n"
 
 	# loop through items
 	while read item; do
@@ -34,9 +37,9 @@ study_deck() {
 
 	# say goodbye and relaunch main
 	if [[ $resets == "y" ]]; then
-		dialog --no-lines --no-shadow --colors --title "Warning" --msgbox "\Zb\Z1Some flashcards have been resetted because of poor performances so you should study the deck again" 13 70
+		dialog --no-lines --no-shadow --colors --title "Warning" --msgbox "\Zb\Z1Some flashcards have been resetted because of poor performances so you should study the deck again" 20 70
 	else
-		dialog --no-lines --no-shadow --colors --title "Completed" --msgbox "\Zb\Z2All flashcards have been reviewed for today" 13 70
+		dialog --no-lines --no-shadow --colors --title "Completed" --msgbox "\Zb\Z2All flashcards have been reviewed for today" 20 70
 	fi
 	main
 }
@@ -54,8 +57,8 @@ study_item() {
 	if [[ $today > $date || $today == $date ]]; then
 		# asks questions, show answers and get quality
 		question_dialog "$question"
-		answer_dialog "$question\n\n$answer"
-		quality=$(quality_dialog)
+		# answer_dialog "$question\n\n$answer"
+		quality=$(quality_dialog "$question\n\n$answer")
 
 		# if not one of the above numbers is given change quality to 0
 		if [[ $quality != 0 && $quality != 1 && $quality != 2 && $quality != 3 && $quality != 4 && $quality != 5 ]]; then
@@ -100,7 +103,7 @@ cram_deck() {
 	done < $deck
 
 	# bye bye message and relaunch main
-	dialog --no-lines --no-shadow --colors --title "Completed" --msgbox "\Zb\Z2Cram completed" 13 70
+	dialog --no-lines --no-shadow --colors --title "Completed" --msgbox "\Zb\Z2Cram completed" 20 70
 	main
 }
 
@@ -116,12 +119,12 @@ cram_item() {
 }
 
 add_to_deck() {
-	question=$(dialog --no-lines --no-cancel --no-shadow --colors --title "Add" --inputbox "Question:" 13 70 --output-fd 1)
-	answer=$(dialog --no-lines --no-cancel --no-shadow --colors --title "Add" --inputbox "Answer:" 13 70 --output-fd 1)
+	question=$(dialog --no-lines --no-cancel --no-shadow --colors --title "Add" --inputbox "Question:" 20 70 --output-fd 1)
+	answer=$(dialog --no-lines --no-cancel --no-shadow --colors --title "Add" --inputbox "Answer:" 20 70 --output-fd 1)
 	echo "$question;$answer;2.5;$(date +"%m-%d-%Y");0;0" >> $deck
 
 	# asks "another one?" just to avoid having to deal with the menu again
-	dialog --no-lines --no-cancel --no-shadow --colors --yesno "Do you want to add another flashcard?" 13 70
+	dialog --no-lines --no-cancel --no-shadow --colors --yesno "Do you want to add another flashcard?" 20 70
 	c=$?
 	if [[ $c == "0" ]]; then
 		add_to_deck
@@ -157,14 +160,14 @@ info_deck() {
 	avg=$(printf "%.2f" $avg)
 
 	# info box
-	dialog --no-lines --no-shadow --colors --title "Info" --msgbox "Total cards:      $items\nDue Today:        $due_today\nDue tomorrow:     $due_tomorrow\nAverage E-factor: $avg" 13 70
+	dialog --no-lines --no-shadow --colors --title "Info" --msgbox "Total cards:      $items\nDue Today:        $due_today\nDue tomorrow:     $due_tomorrow\nAverage E-factor: $avg" 20 70
 	main
 }
 
 # main function
 main() {
 	# get action
-	action=$(dialog --no-lines --no-shadow --no-cancel --title "Menu" --menu "Select what you want to do:" 13 70 5 1 "review deck" 2 "cram deck" 3 "info" 4 "add flashcard" 5 "quit" --output-fd 1)
+	action=$(dialog --no-lines --no-shadow --no-cancel --title "Menu" --menu "Select what you want to do:" 20 70 5 1 "review deck" 2 "cram deck" 3 "info" 4 "add flashcard" 5 "quit" --output-fd 1)
 
 	# perform action
 	if [[ $action == "1" ]]; then
