@@ -1,5 +1,5 @@
-# lt
-Spaced repetition shell scripts based on the SM2 algorithm (it's old but it works (for me)). Now with an ncurses interface as well.
+# nclt
+Spaced repetition shell scripts based on the SM2 algorithm (it's old but it works (for me)); with an ncurses interface.
 
 ## Dependencies
 Everything should be installed on your Linux distro of choice and if not you'll surely find them in your repositories.
@@ -9,10 +9,10 @@ Everything should be installed on your Linux distro of choice and if not you'll 
 * dialog
 
 ## Usage
+Clone this repository, create a deck file (`touch mydeck.deck` should suffice, .deck extension is not needed but recommended to easily spot your decks), run `./nclt mydeck.deck`. After that an ncurses menu should appear in your terminal and you'll be able to study and cram your deck as well as adding new flashcards and see some info.
 
-**THE SECTION BELOW ARE MEANT FOR THE lt FILE, INSTRUCTIONS ON HOW TO USE THE nclt FILE ARE BELOW (and btw you should use that)**
-
-Clone this repository, write your flashcards then simply run `./lt <deck>` to study flashcards in `<deck>`. Files containing flashcards (decks) must have the following structure:
+### Structure of a deck file
+In the remote case you'll ever need to edit a deck file manually this section provides some information about the structure of deck files. A deck file is some plain text file like this:
 
 ```
 <question>;<answer>;<e-factor>;<repetition-date>;<repetition-number>;<current-interval>
@@ -29,21 +29,7 @@ as you can imagine each line represent a flashcard and some information about it
 Definition of a fiel;A field is a commutative division ring;2.5;mm-dd-yyyy;0;0
 ```
 
-usually you'll want to substitute `mm-dd-yyyy` with today's or tomorrow date but if you're making flashcards in advance you can also schedule them for later my writing a future date. You should not put any line that is not of the above format in a deck file nor use the `;` character in your questions or answers. **If you do not respect those simple rules lt will probably fail potentially deleting part (if not all) of your flashcards** thus is good practice to back up your decks (not needed anymore because now lt automatically backs up your decks before reviewing them; however you may want to keep different backups at different times).
-
-**Instead of addings flashcards manually you can now use the add command described below**.
-
-### Using add
-To add a flashcard to a deck just run `./lt add <deck>`; lt will then asks for a question and an answer and then add the flashcard to your deck (automatically filling the needed informations). If you add flashcards using this method then lt will assume today as first review date, if you don't like it you can edit your deck manually later on or patch your changes directly in the code.
-
-### Using cram
-In the spirit of spaced repetition lt does not allow you to study again your deck if no card is scheduled for the current day but sometimes a cram session is needed. To run a cram session on a deck you can use the cram option. By running `./lt cram <deck>` lt will allow you to review all the flashcards in `<deck>` ignoring their scheduled dates. cram also prevent lt from collecting and updating your flashcards data and thus do not require you to score your reviews.
-
-### Using info
-To get informations about a particular deck just run `./lt info <deck>`. At the moment this command does not provide a lot of informations but at least it does something.
-
-## Using nclt
-nclt (ncurses lt) is an ncurses interface to lt; it is easy, intuitive and, at the moment, more updated than lt itself. To use it just run `./nclt <deck>`: a menu will appear in your terminal from which you can access all of lt features (reviewing flashcards, cramming a deck, reading infos about a deck and adding new flashcards to a deck and of course quitting lt) with your arrow keys or by pressing the corresponding number. 
+usually you'll want to substitute `mm-dd-yyyy` with today's or tomorrow date but if you're making flashcards in advance you can also schedule them for later my writing a future date. You should not put any line that is not of the above format in a deck file nor use the `;` character in your questions or answers. **If you do not respect those simple rules nclt will probably fail potentially deleting part (if not all) of your flashcards** thus is good practice to back up your decks (not needed anymore because now nclt automatically backs up your decks before reviewing them; however you may want to keep different backups at different times).
 
 ## Known bugs and strange "features"
 * lt does not allow you to quit a session nor saves any progress to the deck file until the session is over. If you quit from lt for any reason it is possible to recover the lost progress in the `/tmp/tmpdeck` file and merge them back into the deck file
@@ -51,7 +37,7 @@ nclt (ncurses lt) is an ncurses interface to lt; it is easy, intuitive and, at t
 * if you're manually editing your decks do not expect them to be well-ordered; lt literally shuffles them every time
 
 ## TODO
-* [ ] probably dropping lt and moving to developing only nclt
+* [X] probably dropping lt and moving to developing only nclt
 * [X] fix the info bug
 * [X] add more informations to the info command
 * [X] add info funtionality
