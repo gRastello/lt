@@ -2,8 +2,8 @@
 
 # aliases and functions
 tmp_deck="/tmp/tmpdeck"
-today=$(date +"%m-%d-%Y")
-tomorrow=$(date -d "now +1 days" +"%m-%d-%Y")
+today=$(date +"%Y%m%d")
+tomorrow=$(date -d "now +1 days" +"%Y%m%d")
 resets="n"
 
 question_dialog() {
@@ -54,7 +54,7 @@ study_item() {
 	repetition_number="${q[4]}"
 	interval="${q[5]}"
 
-	if [[ $today > $date || $today == $date ]]; then
+	if [[ "$today" -ge "$date" ]]; then
 		# asks questions, show answers and get quality
 		question_dialog "$question"
 		# answer_dialog "$question\n\n$answer"
@@ -84,7 +84,7 @@ study_item() {
 			resets="y"
 			echo "$question;$answer;$new_efactor;$today;0;0" >> $tmp_deck
 		else
-			echo "$question;$answer;$new_efactor;$(date -d "now +$new_interval days" +"%m-%d-%Y");$(echo "$repetition_number + 1" | bc);$new_interval" >> $tmp_deck
+			echo "$question;$answer;$new_efactor;$(date -d "now +$new_interval days" +"%Y%m%d");$(echo "$repetition_number + 1" | bc);$new_interval" >> $tmp_deck
 		fi
 	else
 		echo $1 >> $tmp_deck
@@ -121,7 +121,7 @@ cram_item() {
 add_to_deck() {
 	question=$(dialog --no-lines --no-cancel --no-shadow --colors --title "Add" --inputbox "Question:" 20 70 --output-fd 1)
 	answer=$(dialog --no-lines --no-cancel --no-shadow --colors --title "Add" --inputbox "Answer:" 20 70 --output-fd 1)
-	echo "$question;$answer;2.5;$(date +"%m-%d-%Y");0;0" >> $deck
+	echo "$question;$answer;2.5;$(date +"%Y%m%d");0;0" >> $deck
 
 	# asks "another one?" just to avoid having to deal with the menu again
 	dialog --no-lines --no-cancel --no-shadow --colors --yesno "Do you want to add another flashcard?" 20 70
@@ -148,7 +148,7 @@ info_deck() {
 		sum="$sum + $efactor"
 
 		date="${q[3]}"
-		if [[ $date < $today || $date == $today ]]; then
+		if [[ "$date" -le "$today" ]]; then
 			due_today=$(echo "$due_today + 1" | bc -l)
 		elif [[ $date == $tomorrow ]]; then
 			due_tomorrow=$(echo "$due_tomorrow + 1" | bc -l)
